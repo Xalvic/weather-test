@@ -15,25 +15,34 @@ const Home = () => {
 
         async function getSposts() {
           let lastDay;
+          let times = [[]];
+          let count = -1;
+
           const data = await fetch(
-            `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${long}&units=metric&appid=1283bed00690efb2fd36748386cd65ea`
+            `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${long}&units=metric&appid=1283bed00690efb2fd36748386cd65ea`
           );
           const spots = await data.json();
           const { list } = spots;
           const weathers = list.filter((item) => {
             const today = item.dt_txt.split(" ")[0];
             const unique = today !== lastDay;
+            if (!unique) times[count].push(item);
+            else {
+              times.push([]);
+              count++;
+            }
             lastDay = today;
             return unique;
           });
           setWeather(weathers);
+          console.log(times);
         }
         getSposts();
       });
     }
   }, []);
 
-  console.log(weather);
+  // console.log(weather);
   const state = {
     labels: ["9am", "10am", "11am", "12am", "1pm", "2pm"],
     datasets: [
@@ -94,7 +103,7 @@ const Home = () => {
               <h3>{new Date(single.dt_txt).toDateString().split(" ")[0]}</h3>
               <h3>{single.main.feels_like}&#176;</h3>
               <img
-                src={`http://openweathermap.org/img/wn/${single.weather[0].icon}@2x.png`}
+                src={`https://openweathermap.org/img/wn/${single.weather[0].icon}@2x.png`}
                 alt='pic'
               />
               <h4>{single.weather[0].description}</h4>
@@ -108,7 +117,7 @@ const Home = () => {
                 <div className='row'>
                   <h2>{single.main.feels_like} &#176;C</h2>
                   <img
-                    src={`http://openweathermap.org/img/wn/${single.weather[0].icon}@2x.png`}
+                    src={`https://openweathermap.org/img/wn/${single.weather[0].icon}@2x.png`}
                     alt=''
                   />
                 </div>
