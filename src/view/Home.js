@@ -102,12 +102,15 @@ const Home = () => {
           {weather.map((single) => (
             <div>
               <h3>{new Date(single.dt_txt).toDateString().split(" ")[0]}</h3>
-              <h3>{single.main.feels_like}&#176;</h3>
+              <h4>
+                {Math.floor(single.main.feels_like)}&#176;{" "}
+                {Math.floor(single.main.temp_min)}&#176;
+              </h4>
               <img
                 src={`https://openweathermap.org/img/wn/${single.weather[0].icon}@2x.png`}
                 alt='pic'
               />
-              <h4>{single.weather[0].description}</h4>
+              <h4>{single.weather[0].main}</h4>
             </div>
           ))}
         </Swiper>
@@ -117,7 +120,7 @@ const Home = () => {
               <div className='slider'>
                 <div className='left'>
                   <div className='row'>
-                    <h2>{single.main.feels_like} &#176;C</h2>
+                    <h2>{Math.floor(single.main.feels_like)} &#176;C</h2>
                     <img
                       src={`https://openweathermap.org/img/wn/${single.weather[0].icon}@2x.png`}
                       alt=''
