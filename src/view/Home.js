@@ -86,13 +86,15 @@ const Home = () => {
     wrapperClass: "wrapper",
     slideClass: "box",
     getSwiper: getsmallCard,
-    spaceBetween: 10,
+    spaceBetween: 4,
     centeredSlides: true,
     slidesPerView: "auto",
     touchRatio: 0.2,
     slideToClickedSlide: true,
-    freeMode: true,
-    freeModeSticky: false,
+    // watchSlidesProgress: true,
+    // watchSlidesVisibility: true,
+    // freeMode: true,
+    // freeModeSticky: false,
   };
   const mainCardParams = {
     centeredSlides: true,
@@ -123,7 +125,7 @@ const Home = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
-          <i className='fa map-marker-alt ' aria-hidden='true'></i>
+          <i className='fa fa-map-marker-alt ' aria-hidden='true'></i>
           <button>
             <i className='fa fa-search ' aria-hidden='true'></i>
           </button>
@@ -133,13 +135,10 @@ const Home = () => {
             <div>
               <h3>{new Date(single.dt_txt).toDateString().split(" ")[0]}</h3>
               <h4>
-                {Math.floor(single.main.feels_like)}&#176;{" "}
-                {Math.floor(single.main.temp_min)}&#176;
+                <span>{Math.floor(single.main.feels_like)}&#176;</span>&nbsp;
+                <span>{Math.floor(single.main.temp_min)}&#176;</span>
               </h4>
-              <img
-                src={`https://openweathermap.org/img/wn/${single.weather[0].icon}@2x.png`}
-                alt='pic'
-              />
+              <img src={`/icons/${single.weather[0].icon}.png`} alt='pic' />
               <h4>{single.weather[0].main}</h4>
             </div>
           ))}
@@ -151,10 +150,7 @@ const Home = () => {
                 <div className='left'>
                   <div className='row'>
                     <h2>{Math.floor(single.main.feels_like)} &#176;C</h2>
-                    <img
-                      src={`https://openweathermap.org/img/wn/${single.weather[0].icon}@2x.png`}
-                      alt=''
-                    />
+                    <img src={`/icons/${single.weather[0].icon}.png`} alt='' />
                   </div>
                   <Line
                     className='chart'
@@ -171,6 +167,11 @@ const Home = () => {
                             },
                           },
                         ],
+                      },
+                      pan: {
+                        enabled: true,
+                        mode: "x",
+                        speed: 10,
                       },
                       title: {
                         display: false,
@@ -193,6 +194,7 @@ const Home = () => {
                     <p>{single.main.humidity} %</p>
                   </div>
                 </div>
+                <div className='third-row'>HEY</div>
               </div>{" "}
             </div>
           ))}
