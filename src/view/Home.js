@@ -4,57 +4,80 @@ import "swiper/css/swiper.min.css";
 import { Line } from "react-chartjs-2";
 
 const Home = () => {
-  const [weather, setWeather] = useState([]);
-  const [times, setTime] = useState([]);
+  const [weather, setWeathers] = useState([]);
+  const [times, setTimes] = useState([]);
+  const [search, setSearch] = useState("");
+
+  const callWeather = (e) => {
+    e.preventDefault();
+    // console.log(search);
+    const url =
+      "https://api.openweathermap.org/data/2.5/forecast" +
+      `?q=${search}&units=metric` +
+      "&appid=1283bed00690efb2fd36748386cd65ea";
+    getWeather(url);
+  };
+  async function getWeather(url) {
+    let lastDay;
+
+    const days = [];
+    let count = -1;
+
+    const times = [];
+
+    const data = await fetch(url).then((response) => response.json());
+    console.log(data);
+    const weathers = data.list.filter((item) => {
+      const today = item.dt_txt.split(" ")[0];
+
+      const unique = today !== lastDay;
+
+      if (!unique) days[count].push(item);
+      else {
+        days.push([]);
+        count++;
+        days[count].push(item);
+      }
+
+      lastDay = today;
+
+      return unique;
+    });
+
+    days.forEach((day) => {
+      const labels = day.map((times) => times.dt_txt.split(" ")[1].slice(0, 5));
+      const datasets = [
+        {
+          label: day[0].weather[0].main,
+          fill: false,
+          lineTension: 0.5,
+          backgroundColor: "#ffffff",
+          borderColor: "#87ceeb",
+          borderWidth: 2,
+          pointRadius: 4,
+          data: day.map((times) => times.main.temp),
+        },
+      ];
+
+      times.push({ labels, datasets });
+    });
+
+    setTimes(times);
+    setWeathers(weathers);
+  }
+
   useEffect(() => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
+      navigator.geolocation.getCurrentPosition(async (position) => {
         const { latitude, longitude } = position.coords;
-        let lastDay;
-        let times = [];
-        let count = -1;
-        fetch(
-          `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&units=metric&appid=1283bed00690efb2fd36748386cd65ea`
-        )
-          .then((response) => response.json())
-          .then((data) => {
-            const { list } = data;
-            const weathers = list.filter((item) => {
-              const today = item.dt_txt.split(" ")[0];
-              const unique = today !== lastDay;
-              if (!unique) times[count].push(item);
-              else {
-                times.push([]);
-                count++;
-              }
-              lastDay = today;
-              return unique;
-            });
-            console.log(weathers, times);
-            setWeather(weathers);
-            setTime(times);
-          })
-          .catch((error) => console.log(error));
+        const url =
+          "https://api.openweathermap.org/data/2.5/forecast" +
+          `?lat=${latitude}&lon=${longitude}&units=metric` +
+          "&appid=1283bed00690efb2fd36748386cd65ea";
+        getWeather(url);
       });
     }
   }, []);
-
-  // console.log(weather);
-  const state = {
-    labels: ["9am", "10am", "11am", "12am", "1pm", "2pm"],
-    datasets: [
-      {
-        label: "Rainfall",
-        fill: false,
-        lineTension: 0.5,
-        backgroundColor: "#ffffff",
-        borderColor: "#87ceeb",
-        borderWidth: 2,
-        pointRadius: 4,
-        data: [56, 60, 70, 75, 77, 74],
-      },
-    ],
-  };
 
   const [mainCard, getmainCard] = useState(null);
   const [smallCard, getsmallCard] = useState(null);
@@ -93,10 +116,17 @@ const Home = () => {
   if (weather.length !== 0) {
     return (
       <div className='Home'>
-        <form className='inputWithIcon'>
-          <input type='text' placeholder='Enter the city' />
-          <i className='fa fa-map-marker-alt ' aria-hidden='true'></i>
-          <i className='fa fa-search ' aria-hidden='true'></i>
+        <form className='inputWithIcon' onSubmit={callWeather}>
+          <input
+            type='text'
+            placeholder='Enter the city'
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <i className='fa map-marker-alt ' aria-hidden='true'></i>
+          <button>
+            <i className='fa fa-search ' aria-hidden='true'></i>
+          </button>
         </form>
         <Swiper {...smallCardParams}>
           {weather.map((single) => (
@@ -115,7 +145,7 @@ const Home = () => {
           ))}
         </Swiper>
         <Swiper {...mainCardParams}>
-          {weather.map((single) => (
+          {weather.map((single, index) => (
             <div>
               <div className='slider'>
                 <div className='left'>
@@ -128,7 +158,7 @@ const Home = () => {
                   </div>
                   <Line
                     className='chart'
-                    data={state}
+                    data={times[index]}
                     options={{
                       scales: {
                         yAxes: [
@@ -172,6 +202,7 @@ const Home = () => {
   } else {
     return (
       <div className='Loader'>
+        <div className='warn'>Make sure the device location is on</div>
         <div className='load'></div>
         <div className='tell'>Please Wait</div>
       </div>

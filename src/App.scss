@@ -46,7 +46,8 @@ input[type="text"]:focus {
 }
 
 .inputWithIcon {
-  i {
+  .fa-map-marker-alt,
+  button {
     position: absolute;
     top: 8px;
     padding: 9px 8px;
@@ -56,9 +57,12 @@ input[type="text"]:focus {
   .fa-map-marker-alt {
     left: 0;
   }
-  .fa-search {
+  button {
     right: 0;
-    padding-left: 0;
+    padding: 7px 10px;
+    outline: none;
+    border: none;
+    background: transparent;
   }
 }
 
@@ -174,6 +178,9 @@ input[type="text"]:focus {
   justify-content: center;
   flex-direction: column;
   color: #fff;
+  .warn {
+    margin-bottom: 20px;
+  }
   .load {
     width: 64px;
     height: 64px;
