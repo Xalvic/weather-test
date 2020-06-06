@@ -5,39 +5,36 @@ import { Line } from "react-chartjs-2";
 
 const Home = () => {
   const [weather, setWeather] = useState([]);
-
+  const [times, setTime] = useState([]);
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
-        const long = position.coords.longitude;
-        const lat = position.coords.latitude;
-        // const api = `api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&appid=1283bed00690efb2fd36748386cd65ea`;
-
-        async function getSposts() {
-          let lastDay;
-          let times = [[]];
-          let count = -1;
-
-          const data = await fetch(
-            `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${long}&units=metric&appid=1283bed00690efb2fd36748386cd65ea`
-          );
-          const spots = await data.json();
-          const { list } = spots;
-          const weathers = list.filter((item) => {
-            const today = item.dt_txt.split(" ")[0];
-            const unique = today !== lastDay;
-            if (!unique) times[count].push(item);
-            else {
-              times.push([]);
-              count++;
-            }
-            lastDay = today;
-            return unique;
-          });
-          setWeather(weathers);
-          console.log(times);
-        }
-        getSposts();
+        const { latitude, longitude } = position.coords;
+        let lastDay;
+        let times = [];
+        let count = -1;
+        fetch(
+          `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&units=metric&appid=1283bed00690efb2fd36748386cd65ea`
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            const { list } = data;
+            const weathers = list.filter((item) => {
+              const today = item.dt_txt.split(" ")[0];
+              const unique = today !== lastDay;
+              if (!unique) times[count].push(item);
+              else {
+                times.push([]);
+                count++;
+              }
+              lastDay = today;
+              return unique;
+            });
+            console.log(weathers, times);
+            setWeather(weathers);
+            setTime(times);
+          })
+          .catch((error) => console.log(error));
       });
     }
   }, []);
@@ -71,10 +68,14 @@ const Home = () => {
     slidesPerView: "auto",
     touchRatio: 0.2,
     slideToClickedSlide: true,
+    freeMode: true,
+    freeModeSticky: false,
   };
   const mainCardParams = {
+    centeredSlides: true,
     getSwiper: getmainCard,
     spaceBetween: 10,
+    freeModeSticky: true,
   };
   useEffect(() => {
     if (
@@ -114,36 +115,40 @@ const Home = () => {
           {weather.map((single) => (
             <div>
               <div className='slider'>
-                <div className='row'>
-                  <h2>{single.main.feels_like} &#176;C</h2>
-                  <img
-                    src={`https://openweathermap.org/img/wn/${single.weather[0].icon}@2x.png`}
-                    alt=''
+                <div className='left'>
+                  <div className='row'>
+                    <h2>{single.main.feels_like} &#176;C</h2>
+                    <img
+                      src={`https://openweathermap.org/img/wn/${single.weather[0].icon}@2x.png`}
+                      alt=''
+                    />
+                  </div>
+                  <Line
+                    className='chart'
+                    data={state}
+                    options={{
+                      scales: {
+                        yAxes: [
+                          {
+                            gridLines: {
+                              display: false,
+                            },
+                            ticks: {
+                              display: false,
+                            },
+                          },
+                        ],
+                      },
+                      title: {
+                        display: false,
+                      },
+                      legend: {
+                        display: false,
+                      },
+                    }}
                   />
                 </div>
-                <Line
-                  data={state}
-                  options={{
-                    scales: {
-                      yAxes: [
-                        {
-                          gridLines: {
-                            display: false,
-                          },
-                          ticks: {
-                            display: false,
-                          },
-                        },
-                      ],
-                    },
-                    title: {
-                      display: false,
-                    },
-                    legend: {
-                      display: false,
-                    },
-                  }}
-                />
+
                 <div className='second-row'>
                   <div className='pressure boxes'>
                     <h4>Pressure</h4>
@@ -162,7 +167,12 @@ const Home = () => {
       </div>
     );
   } else {
-    return null;
+    return (
+      <div className='Loader'>
+        <div className='load'></div>
+        <div className='tell'>Please Wait</div>
+      </div>
+    );
   }
 };
 

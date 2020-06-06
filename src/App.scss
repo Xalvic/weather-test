@@ -84,6 +84,9 @@ input[type="text"]:focus {
       height: 97%;
       background-color: #fff;
       box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+      canvas {
+        margin-top: 30px;
+      }
       .row {
         display: flex;
         align-items: center;
@@ -159,6 +162,44 @@ input[type="text"]:focus {
   }
 }
 
+.Loader {
+  min-height: 100vh;
+  background-color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: #fff;
+  .load {
+    width: 64px;
+    height: 64px;
+    animation: lolta 4s infinite;
+  }
+  .tell {
+    margin-top: 30px;
+  }
+}
+@keyframes lolta {
+  0% {
+    background: transparent;
+  }
+  20% {
+    background: url(/icons/cloud.png) no-repeat;
+  }
+  40% {
+    background: url(/icons/storm.png) no-repeat;
+  }
+  60% {
+    background: url(/icons/thunder.png) no-repeat;
+  }
+  80% {
+    background: url(/icons/weather.png) no-repeat;
+  }
+  100% {
+    background: url(/icons/snow.png) no-repeat;
+  }
+}
+
 @media only screen and (min-width: 350px) {
   input[type="text"] {
     width: 100%;
@@ -192,6 +233,74 @@ input[type="text"]:focus {
       .box {
         width: 95px;
         height: 130px;
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: 1000px) {
+  input[type="text"] {
+    width: 500px;
+  }
+  .thumb {
+    .wrapper {
+      .box {
+        width: 95px;
+        height: 130px;
+      }
+    }
+  }
+  .swiper-container {
+    height: 40rem;
+    width: 100%;
+    .swiper-slide {
+      width: inherit;
+      height: inherit;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .slider {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 15px;
+        border-radius: 10px;
+        width: 90%;
+        height: 97%;
+        canvas {
+          // width: 700px !important;
+          height: 500px !important;
+        }
+        .row {
+          display: flex;
+          align-items: center;
+          h2 {
+            font-size: 36px;
+          }
+          img {
+            margin-left: 15px;
+            width: 45px;
+            height: 45px;
+          }
+        }
+        .second-row {
+          display: flex;
+          justify-content: space-between;
+          margin-top: 20px;
+          .boxes {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            width: 100px;
+            height: 50px;
+            h4 {
+              font-size: 14px;
+            }
+            p {
+              font-size: 10px;
+            }
+          }
+        }
       }
     }
   }
