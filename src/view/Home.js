@@ -14,6 +14,7 @@ const Home = () => {
       setSuggestions([]);
       return;
     }
+    console.log(suggestion);
     const access_token =
       "pk.eyJ1IjoiaGVudGV2YWFuIiwiYSI6ImNrYjR5aXM3azBrZHgyc21pY29qbjF6NTUifQ.AWYDEh1RmY9Jmr-fTsA0TA";
 
@@ -50,7 +51,6 @@ const Home = () => {
     getSuggestions(search);
   }, [search]);
 
-  console.log(suggestion);
   const callWeather = (e) => {
     e.preventDefault();
     // console.log(search);
@@ -59,7 +59,8 @@ const Home = () => {
       `?q=${search}&units=metric` +
       "&appid=1283bed00690efb2fd36748386cd65ea";
     getWeather(url);
-    setSuggestions([""]);
+    // setSuggestions([]);
+    setSearch("");
   };
   async function getWeather(url) {
     let lastDay;
