@@ -10,6 +10,10 @@ const Home = () => {
   const [suggestion, setSuggestions] = useState([]);
 
   const getSuggestions = async (input) => {
+    if (!input) {
+      setSuggestions([]);
+      return;
+    }
     const access_token =
       "pk.eyJ1IjoiaGVudGV2YWFuIiwiYSI6ImNrYjR5aXM3azBrZHgyc21pY29qbjF6NTUifQ.AWYDEh1RmY9Jmr-fTsA0TA";
 
@@ -55,6 +59,7 @@ const Home = () => {
       `?q=${search}&units=metric` +
       "&appid=1283bed00690efb2fd36748386cd65ea";
     getWeather(url);
+    setSuggestions([""]);
   };
   async function getWeather(url) {
     let lastDay;
@@ -134,6 +139,19 @@ const Home = () => {
     // watchSlidesVisibility: true,
     // freeMode: true,
     // freeModeSticky: false,
+    breakpoints: {
+      800: {
+        containerClass: "thumb",
+        wrapperClass: "wrapper",
+        slideClass: "box",
+        getSwiper: getsmallCard,
+        spaceBetween: 1,
+        centeredSlides: true,
+        slidesPerView: "auto",
+        touchRatio: 0.2,
+        slideToClickedSlide: true,
+      },
+    },
   };
   const mainCardParams = {
     centeredSlides: true,
@@ -171,33 +189,33 @@ const Home = () => {
             placeholder='Enter the city'
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            onFocus={reveal}
-            onBlur={close}
+            // onFocus={reveal}
+            // onBlur={close}
           />
           <i className='fa fa-map-marker-alt ' aria-hidden='true'></i>
           <button>
             <i className='fa fa-search ' aria-hidden='true'></i>
           </button>
-          <ul className={show ? "dropdown" : "dropdown-hide"}>
-            {suggestion.map((sos) => (
-              <li
-                className='dropdown-item'
-                key={sos.name}
-                onClick={() => {
-                  console.log("oioioioi");
-                }}
-              >
-                <p>{sos.name}</p>
-                <div className='right'>
-                  <div className='temp'>
-                    <p>{Math.floor(sos.feels_like)}&#176; C</p>
-                    <p>{sos.main}</p>
+          {suggestion.length > 0 && (
+            <ul className='dropdown'>
+              {suggestion.map((sos) => (
+                <li
+                  className='dropdown-item'
+                  key={sos.name}
+                  onClick={() => setSearch(sos.name)}
+                >
+                  <p>{sos.name}</p>
+                  <div className='right'>
+                    <div className='temp'>
+                      <p>{Math.floor(sos.feels_like)}&#176; C</p>
+                      <p>{sos.main}</p>
+                    </div>
+                    <img src={`/icons/${sos.icon}.png`} alt='ico' />
                   </div>
-                  <img src={`/icons/${sos.icon}.png`} alt='ico' />
-                </div>
-              </li>
-            ))}
-          </ul>
+                </li>
+              ))}
+            </ul>
+          )}
         </form>
         <Swiper {...smallCardParams}>
           {weather.map((single) => (
@@ -252,18 +270,20 @@ const Home = () => {
                   />
                 </div>
 
-                <div className='second-row'>
-                  <div className='pressure boxes'>
-                    <h4>Pressure</h4>
-                    <p>{single.main.pressure} hpa</p>
+                <div className='right-col'>
+                  <div className='second-row'>
+                    <div className='pressure boxes'>
+                      <h4>Pressure</h4>
+                      <p>{single.main.pressure} hpa</p>
+                    </div>
+                    <div className='humidity boxes'>
+                      {" "}
+                      <h4>Humidity</h4>
+                      <p>{single.main.humidity} %</p>
+                    </div>
                   </div>
-                  <div className='humidity boxes'>
-                    {" "}
-                    <h4>Humidity</h4>
-                    <p>{single.main.humidity} %</p>
-                  </div>
+                  <div className='third-row'>HEY</div>
                 </div>
-                <div className='third-row'>HEY</div>
               </div>{" "}
             </div>
           ))}
