@@ -97,7 +97,11 @@ const Home = () => {
     });
 
     days.forEach((day) => {
-      const labels = day.map((times) => times.dt_txt.split(" ")[1].slice(0, 5));
+      const labels = day.map((times) => {
+        let dt = new Date(times.dt).toLocaleTimeString();
+
+        return `${String(dt.match(/\d+/))}${dt.slice(-2).toLowerCase()}`;
+      });
       const datasets = [
         {
           label: day[0].weather[0].main,
@@ -107,10 +111,10 @@ const Home = () => {
           borderColor: "#87ceeb",
           borderWidth: 2,
           pointRadius: 4,
+          fill: false,
           data: day.map((times) => times.main.temp),
         },
       ];
-
       times.push({ labels, datasets });
     });
 
@@ -179,14 +183,6 @@ const Home = () => {
     }
   }, [mainCard, smallCard]);
 
-  const [show, setShow] = useState(false);
-
-  const reveal = () => {
-    setShow(true);
-  };
-  const close = () => {
-    setShow(false);
-  };
   // const ad = new Date()
   if (weather.length !== 0) {
     return (
@@ -251,28 +247,54 @@ const Home = () => {
                     className='chart'
                     data={times[index]}
                     options={{
+                      responsive: true,
                       scales: {
-                        yAxes: [
+                        xAxes: [
                           {
                             gridLines: {
+                              drawBorder: false,
+                              color: "#BFBFBF",
+                              lineWidth: 2,
+                            },
+                            ticks: {
+                              beginAtZero: true,
+                            },
+                          },
+                        ],
+                        yAxes: [
+                          {
+                            display: false,
+                            gridLines: {
+                              drawBorder: false,
                               display: false,
                             },
                             ticks: {
                               display: false,
+                              beginAtZero: false,
                             },
                           },
                         ],
-                      },
-                      pan: {
-                        enabled: true,
-                        mode: "x",
-                        speed: 10,
                       },
                       title: {
                         display: false,
                       },
                       legend: {
                         display: false,
+                      },
+                      pan: {
+                        enabled: true,
+                        mode: "x",
+                        speed: 10,
+                        threshold: 10,
+                      },
+                      zoom: {
+                        enabled: true,
+                        drag: false,
+                        mode: "xy",
+                        limits: {
+                          max: 10,
+                          min: 0.5,
+                        },
                       },
                     }}
                   />
@@ -291,6 +313,10 @@ const Home = () => {
                     </div>
                   </div>
                   <div className='third-row'>
+                    {/* <div className='sun-des'>
+                      <h4>Sunrise</h4>
+                      <h4>Sunset</h4>
+                    </div> */}
                     <img src='/icons/noon@2x.png' alt='' />
                   </div>
                 </div>
