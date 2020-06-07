@@ -10,10 +10,8 @@ const Home = () => {
   const [suggestion, setSuggestions] = useState([]);
 
   const getSuggestions = async (input) => {
-    if (!input) {
-      setSuggestions([]);
-      return;
-    }
+    setSuggestions([]);
+    if (!input) return;
     console.log(suggestion);
     const access_token =
       "pk.eyJ1IjoiaGVudGV2YWFuIiwiYSI6ImNrYjR5aXM3azBrZHgyc21pY29qbjF6NTUifQ.AWYDEh1RmY9Jmr-fTsA0TA";
