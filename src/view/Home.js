@@ -2,12 +2,51 @@ import React, { useState, useEffect } from "react";
 import Swiper from "react-id-swiper";
 import "swiper/css/swiper.min.css";
 import { Line } from "react-chartjs-2";
-
+//Google API Key = AIzaSyDXND7Uhs4Qp33isz2lC4x4KHRkJfMz4qc
 const Home = () => {
   const [weather, setWeathers] = useState([]);
   const [times, setTimes] = useState([]);
   const [search, setSearch] = useState("");
+  const [suggestion, setSuggestions] = useState([]);
 
+  const getSuggestions = async (input) => {
+    const access_token =
+      "pk.eyJ1IjoiaGVudGV2YWFuIiwiYSI6ImNrYjR5aXM3azBrZHgyc21pY29qbjF6NTUifQ.AWYDEh1RmY9Jmr-fTsA0TA";
+
+    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${input}.json?access_token=${access_token}&autocomplete=true&types=country%2Cregion%2Cdistrict`;
+
+    try {
+      const { features } = await fetch(url).then((response) => response.json());
+
+      const suggestions = [];
+
+      const locations = features.map((feature) => feature.text);
+
+      locations.forEach(async (location) => {
+        const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=1283bed00690efb2fd36748386cd65ea`;
+
+        const weather = await fetch(url).then((response) => response.json());
+
+        if (weather.cod == 200) {
+          suggestions.push({
+            name: weather.name,
+            feels_like: weather.main.feels_like,
+            icon: weather.weather[0].icon,
+            main: weather.weather[0].main,
+          });
+        }
+        setSuggestions(suggestions);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getSuggestions(search);
+  }, [search]);
+
+  console.log(suggestion);
   const callWeather = (e) => {
     e.preventDefault();
     // console.log(search);
@@ -114,6 +153,14 @@ const Home = () => {
     }
   }, [mainCard, smallCard]);
 
+  const [show, setShow] = useState(false);
+
+  const reveal = () => {
+    setShow(true);
+  };
+  const close = () => {
+    setShow(false);
+  };
   // const ad = new Date()
   if (weather.length !== 0) {
     return (
@@ -124,11 +171,33 @@ const Home = () => {
             placeholder='Enter the city'
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            onFocus={reveal}
+            onBlur={close}
           />
           <i className='fa fa-map-marker-alt ' aria-hidden='true'></i>
           <button>
             <i className='fa fa-search ' aria-hidden='true'></i>
           </button>
+          <ul className={show ? "dropdown" : "dropdown-hide"}>
+            {suggestion.map((sos) => (
+              <li
+                className='dropdown-item'
+                key={sos.name}
+                onClick={() => {
+                  console.log("oioioioi");
+                }}
+              >
+                <p>{sos.name}</p>
+                <div className='right'>
+                  <div className='temp'>
+                    <p>{Math.floor(sos.feels_like)}&#176; C</p>
+                    <p>{sos.main}</p>
+                  </div>
+                  <img src={`/icons/${sos.icon}.png`} alt='ico' />
+                </div>
+              </li>
+            ))}
+          </ul>
         </form>
         <Swiper {...smallCardParams}>
           {weather.map((single) => (
