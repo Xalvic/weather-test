@@ -33,14 +33,23 @@ const Home = () => {
         const weather = await fetch(url).then((response) => response.json());
 
         if (weather.cod == 200) {
-          suggestions.push({
-            name: weather.name,
-            feels_like: weather.main.feels_like,
-            icon: weather.weather[0].icon,
-            main: weather.weather[0].main,
-          });
+          // suggestions.push({
+          //   name: weather.name,
+          //   feels_like: weather.main.feels_like,
+          //   icon: weather.weather[0].icon,
+          //   main: weather.weather[0].main,
+          // });
+          setSuggestions((suggestion) => [
+            ...suggestion,
+            {
+              name: weather.name,
+              feels_like: weather.main.feels_like,
+              icon: weather.weather[0].icon,
+              main: weather.weather[0].main,
+            },
+          ]);
         }
-        setSuggestions(suggestions);
+        // setSuggestions(suggestions);
       });
     } catch (error) {
       console.log(error);
