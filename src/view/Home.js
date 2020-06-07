@@ -10,7 +10,7 @@ const Home = () => {
   const [suggestion, setSuggestions] = useState([]);
 
   const getSuggestions = async (input) => {
-    setSuggestions([]);
+    setSuggestions((suggestion) => []);
     if (!input) return;
     console.log(suggestion);
     const access_token =
@@ -290,7 +290,9 @@ const Home = () => {
                       <p>{single.main.humidity} %</p>
                     </div>
                   </div>
-                  <div className='third-row'>HEY</div>
+                  <div className='third-row'>
+                    <img src='/icons/noon@2x.png' alt='' />
+                  </div>
                 </div>
               </div>{" "}
             </div>
