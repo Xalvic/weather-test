@@ -304,19 +304,19 @@ const Home = () => {
                           x: 6,
                         },
                       },
-                      // zoom: {
-                      //   enabled: true,
-                      //   drag: false,
-                      //   mode: "xy",
-                      //   rangeMin: {
-                      //     x: 0,
-                      //     y: 0,
-                      //   },
-                      //   rangeMax: {
-                      //     x: 4,
-                      //     y: 4,
-                      //   },
-                      // },
+                      zoom: {
+                        enabled: true,
+                        drag: false,
+                        mode: "xy",
+                        rangeMin: {
+                          x: 0,
+                          y: 0,
+                        },
+                        rangeMax: {
+                          x: 5,
+                          y: 5,
+                        },
+                      },
                     }}
                   />
                 </div>
