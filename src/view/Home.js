@@ -7,6 +7,7 @@ import { Line } from "react-chartjs-2";
 const Home = () => {
   const [weather, setWeathers] = useState([]);
   const [times, setTimes] = useState([]);
+  const [sunTimes, setSuntimes] = useState([]);
   const [search, setSearch] = useState("");
   const [suggestion, setSuggestions] = useState([]);
 
@@ -78,6 +79,11 @@ const Home = () => {
 
     const times = [];
 
+    const furl = url.replace("forecast", "weather");
+    const {
+      sys: { sunrise, sunset },
+    } = await fetch(furl).then((response) => response.json());
+    setSuntimes(sunrise, sunset);
     const data = await fetch(url).then((response) => response.json());
     console.log(data);
     const weathers = data.list.filter((item) => {
@@ -99,7 +105,7 @@ const Home = () => {
 
     days.forEach((day) => {
       const labels = day.map((times) => {
-        let dt = new Date(times.dt).toLocaleTimeString();
+        let dt = new Date(times.dt_txt).toLocaleTimeString();
 
         return `${String(dt.match(/\d+/))}${dt.slice(-2).toLowerCase()}`;
       });
@@ -166,17 +172,14 @@ const Home = () => {
     },
   };
   const mainCardParams = {
-    centeredSlides: false,
+    centeredSlides: true,
     getSwiper: getmainCard,
     spaceBetween: 10,
     freeModeSticky: true,
-    loop: false,
-    speed: 200,
-    initialSlide: 0,
-    pagination: false,
-    simulateTouch: false,
-    allowSwipeToNext: false,
-    allowSwipeToPrev: false,
+    slidesPerView: 1,
+    noSwiping: false,
+    allowSlidePrev: false,
+    allowSlideNext: false,
   };
   useEffect(() => {
     if (
@@ -190,6 +193,7 @@ const Home = () => {
     }
   }, [mainCard, smallCard]);
 
+  console.log(sunTimes[0]);
   // const ad = new Date()
   if (weather.length !== 0) {
     return (
@@ -266,19 +270,19 @@ const Home = () => {
                             ticks: {
                               beginAtZero: false,
                               minTicksLimit: 0,
-                              maxTicksLimit: 5,
+                              maxTicksLimit: 6,
                             },
                           },
                         ],
                         yAxes: [
                           {
-                            display: false,
+                            display: true,
                             gridLines: {
                               drawBorder: false,
                               display: false,
                             },
                             ticks: {
-                              display: false,
+                              display: true,
                               beginAtZero: false,
                               minTicksLimit: 0,
                               maxTicksLimit: 5,
@@ -292,31 +296,31 @@ const Home = () => {
                       legend: {
                         display: false,
                       },
-                      pan: {
-                        enabled: true,
-                        mode: "xy",
-                        speed: 10,
-                        threshold: 10,
-                        rangeMin: {
-                          x: 3,
-                        },
-                        rangeMax: {
-                          x: 6,
-                        },
-                      },
-                      zoom: {
-                        enabled: true,
-                        drag: false,
-                        mode: "xy",
-                        rangeMin: {
-                          x: 0,
-                          y: 0,
-                        },
-                        rangeMax: {
-                          x: 5,
-                          y: 5,
-                        },
-                      },
+                      // pan: {
+                      //   enabled: true,
+                      //   mode: "xy",
+                      //   speed: 10,
+                      //   threshold: 10,
+                      //   rangeMin: {
+                      //     x: 0,
+                      //   },
+                      //   rangeMax: {
+                      //     x: 6,
+                      //   },
+                      // },
+                      // zoom: {
+                      //   enabled: true,
+                      //   drag: false,
+                      //   mode: "xy",
+                      //   rangeMin: {
+                      //     x: 0,
+                      //     y: 0,
+                      //   },
+                      //   rangeMax: {
+                      //     x: 5,
+                      //     y: 5,
+                      //   },
+                      // },
                     }}
                   />
                 </div>
@@ -337,11 +341,11 @@ const Home = () => {
                     <div className='sun-des'>
                       <div className='suns rise'>
                         <h5>Sunrise</h5>
-                        <p>7:22am</p>
+                        <p>{sunTimes[0]}</p>
                       </div>
                       <div className='suns set'>
                         <h5>Sunset</h5>
-                        <p>6:12pm</p>
+                        <p>{sunTimes[1]}</p>
                       </div>
                     </div>
                     <img src='/icons/noon@2x.png' alt='' />
