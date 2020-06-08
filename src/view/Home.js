@@ -3,7 +3,6 @@ import Swiper from "react-id-swiper";
 import "swiper/css/swiper.min.css";
 import * as Zoom from "chartjs-plugin-zoom";
 import { Line } from "react-chartjs-2";
-//Google API Key = AIzaSyDXND7Uhs4Qp33isz2lC4x4KHRkJfMz4qc
 const Home = () => {
   const [weather, setWeathers] = useState([]);
   const [times, setTimes] = useState([]);
@@ -31,12 +30,6 @@ const Home = () => {
         const weather = await fetch(url).then((response) => response.json());
 
         if (weather.cod == 200) {
-          // suggestions.push({
-          //   name: weather.name,
-          //   feels_like: weather.main.feels_like,
-          //   icon: weather.weather[0].icon,
-          //   main: weather.weather[0].main,
-          // });
           setSuggestions((suggestion) => [
             ...suggestion,
             {
@@ -185,9 +178,9 @@ const Home = () => {
     spaceBetween: 10,
     freeModeSticky: true,
     slidesPerView: 1,
-    noSwiping: false,
-    allowSlidePrev: false,
-    allowSlideNext: false,
+    // noSwiping: false,
+    // allowSlidePrev: false,
+    // allowSlideNext: false,
   };
   useEffect(() => {
     if (
