@@ -12,7 +12,7 @@ const Home = () => {
   const [suggestion, setSuggestions] = useState([]);
 
   const getSuggestions = async (input) => {
-    setSuggestions((suggestion) => []);
+    setSuggestions([]);
     if (!input) return;
     console.log(suggestion);
     const access_token =
@@ -22,8 +22,6 @@ const Home = () => {
 
     try {
       const { features } = await fetch(url).then((response) => response.json());
-
-      const suggestions = [];
 
       const locations = features.map((feature) => feature.text);
 
@@ -83,7 +81,17 @@ const Home = () => {
     const {
       sys: { sunrise, sunset },
     } = await fetch(furl).then((response) => response.json());
-    setSuntimes(sunrise, sunset);
+
+    let sunriseTime = new Date(sunrise * 1000).toLocaleTimeString();
+    let sunsetTime = new Date(sunset * 1000).toLocaleTimeString();
+    sunriseTime = `${String(sunriseTime.match(/\d+/))}${String(
+      sunriseTime.match(/:\d+/)
+    )}${sunriseTime.slice(-2).toLowerCase()}`;
+    sunsetTime = `${String(sunsetTime.match(/\d+/))}${String(
+      sunsetTime.match(/:\d+/)
+    )}${sunsetTime.slice(-2).toLowerCase()}`;
+    setSuntimes([sunriseTime, sunsetTime]);
+
     const data = await fetch(url).then((response) => response.json());
     console.log(data);
     const weathers = data.list.filter((item) => {
