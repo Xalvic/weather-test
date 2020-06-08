@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Swiper from "react-id-swiper";
 import "swiper/css/swiper.min.css";
+import * as Zoom from "chartjs-plugin-zoom";
 import { Line } from "react-chartjs-2";
 //Google API Key = AIzaSyDXND7Uhs4Qp33isz2lC4x4KHRkJfMz4qc
 const Home = () => {
@@ -111,7 +112,6 @@ const Home = () => {
           borderColor: "#87ceeb",
           borderWidth: 2,
           pointRadius: 4,
-          fill: false,
           data: day.map((times) => times.main.temp),
         },
       ];
@@ -166,10 +166,17 @@ const Home = () => {
     },
   };
   const mainCardParams = {
-    centeredSlides: true,
+    centeredSlides: false,
     getSwiper: getmainCard,
     spaceBetween: 10,
     freeModeSticky: true,
+    loop: false,
+    speed: 200,
+    initialSlide: 0,
+    pagination: false,
+    simulateTouch: false,
+    allowSwipeToNext: false,
+    allowSwipeToPrev: false,
   };
   useEffect(() => {
     if (
@@ -254,10 +261,12 @@ const Home = () => {
                             gridLines: {
                               drawBorder: false,
                               color: "#BFBFBF",
-                              lineWidth: 2,
+                              lineWidth: 3,
                             },
                             ticks: {
-                              beginAtZero: true,
+                              beginAtZero: false,
+                              minTicksLimit: 0,
+                              maxTicksLimit: 5,
                             },
                           },
                         ],
@@ -271,6 +280,8 @@ const Home = () => {
                             ticks: {
                               display: false,
                               beginAtZero: false,
+                              minTicksLimit: 0,
+                              maxTicksLimit: 5,
                             },
                           },
                         ],
@@ -283,19 +294,29 @@ const Home = () => {
                       },
                       pan: {
                         enabled: true,
-                        mode: "x",
+                        mode: "xy",
                         speed: 10,
                         threshold: 10,
-                      },
-                      zoom: {
-                        enabled: true,
-                        drag: false,
-                        mode: "xy",
-                        limits: {
-                          max: 10,
-                          min: 0.5,
+                        rangeMin: {
+                          x: 3,
+                        },
+                        rangeMax: {
+                          x: 6,
                         },
                       },
+                      // zoom: {
+                      //   enabled: true,
+                      //   drag: false,
+                      //   mode: "xy",
+                      //   rangeMin: {
+                      //     x: 0,
+                      //     y: 0,
+                      //   },
+                      //   rangeMax: {
+                      //     x: 4,
+                      //     y: 4,
+                      //   },
+                      // },
                     }}
                   />
                 </div>
@@ -313,10 +334,16 @@ const Home = () => {
                     </div>
                   </div>
                   <div className='third-row'>
-                    {/* <div className='sun-des'>
-                      <h4>Sunrise</h4>
-                      <h4>Sunset</h4>
-                    </div> */}
+                    <div className='sun-des'>
+                      <div className='suns rise'>
+                        <h5>Sunrise</h5>
+                        <p>7:22am</p>
+                      </div>
+                      <div className='suns set'>
+                        <h5>Sunset</h5>
+                        <p>6:12pm</p>
+                      </div>
+                    </div>
                     <img src='/icons/noon@2x.png' alt='' />
                   </div>
                 </div>
