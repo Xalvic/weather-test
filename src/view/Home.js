@@ -61,6 +61,15 @@ const Home = () => {
     getWeather(url);
     setSearch("");
   };
+  const clickListItem = (name) => {
+    console.log(name);
+    setSearch(name);
+    const url =
+      "https://api.openweathermap.org/data/2.5/forecast" +
+      `?q=${name}&units=metric` +
+      "&appid=1283bed00690efb2fd36748386cd65ea";
+    getWeather(url);
+  };
   async function getWeather(url) {
     let lastDay;
 
@@ -220,7 +229,7 @@ const Home = () => {
                   key={sos.name}
                   onClick={() => {
                     setShowSuggestion(false)
-                    callWeather()
+                    clickListItem(sos.name)
                   }}
                 >
                   <p>{sos.name}</p>
