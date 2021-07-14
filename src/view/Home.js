@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Swiper from "react-id-swiper";
 import "swiper/css/swiper.min.css";
-import * as Zoom from "chartjs-plugin-zoom";
 import { Line } from "react-chartjs-2";
 const Home = () => {
   const [weather, setWeathers] = useState([]);
@@ -30,7 +29,7 @@ const Home = () => {
 
         const weather = await fetch(url).then((response) => response.json());
 
-        if (weather.cod == 200) {
+        if (weather.cod === 200) {
           setSuggestions((suggestion) => [
             ...suggestion,
             {
