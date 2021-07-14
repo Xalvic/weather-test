@@ -9,11 +9,12 @@ const Home = () => {
   const [sunTimes, setSuntimes] = useState([]);
   const [search, setSearch] = useState("");
   const [suggestion, setSuggestions] = useState([]);
+  const [showSuggestion, setShowSuggestion] = useState(false);
 
   const getSuggestions = async (input) => {
     setSuggestions([]);
     if (!input) return;
-    console.log(suggestion);
+
     const access_token =
       "pk.eyJ1IjoiaGVudGV2YWFuIiwiYSI6ImNrYjR5aXM3azBrZHgyc21pY29qbjF6NTUifQ.AWYDEh1RmY9Jmr-fTsA0TA";
 
@@ -43,7 +44,7 @@ const Home = () => {
         // setSuggestions(suggestions);
       });
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 
@@ -52,14 +53,13 @@ const Home = () => {
   }, [search]);
 
   const callWeather = (e) => {
-    e.preventDefault();
-    // console.log(search);
+    if(e) e.preventDefault();
+
     const url =
       "https://api.openweathermap.org/data/2.5/forecast" +
       `?q=${search}&units=metric` +
       "&appid=1283bed00690efb2fd36748386cd65ea";
     getWeather(url);
-    // setSuggestions([]);
     setSearch("");
   };
   async function getWeather(url) {
@@ -86,7 +86,7 @@ const Home = () => {
     setSuntimes([sunriseTime, sunsetTime]);
 
     const data = await fetch(url).then((response) => response.json());
-    console.log(data);
+
     const weathers = data.list.filter((item) => {
       const today = item.dt_txt.split(" ")[0];
 
@@ -194,8 +194,6 @@ const Home = () => {
     }
   }, [mainCard, smallCard]);
 
-  console.log(sunTimes[0]);
-  // const ad = new Date()
   if (weather.length !== 0) {
     return (
       <div className='Home'>
@@ -204,7 +202,10 @@ const Home = () => {
             type='text'
             placeholder='Enter the city'
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => {
+              if(!showSuggestion) setShowSuggestion(true)
+              setSearch(e.target.value)
+            }}
             // onFocus={reveal}
             // onBlur={close}
           />
@@ -212,13 +213,16 @@ const Home = () => {
           <button>
             <i className='fa fa-search ' aria-hidden='true'></i>
           </button>
-          {suggestion.length > 0 && (
+          {showSuggestion && suggestion.length > 0 ? (
             <ul className='dropdown'>
               {suggestion.map((sos) => (
                 <li
                   className='dropdown-item'
                   key={sos.name}
-                  onClick={() => setSearch(sos.name)}
+                  onClick={() => {
+                    setShowSuggestion(false)
+                    callWeather()
+                  }}
                 >
                   <p>{sos.name}</p>
                   <div className='right'>
@@ -231,7 +235,7 @@ const Home = () => {
                 </li>
               ))}
             </ul>
-          )}
+          ) : null}
         </form>
         <Swiper {...smallCardParams}>
           {weather.map((single) => (
